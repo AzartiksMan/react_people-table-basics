@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react';
 import { getPeople } from '../api';
 import { Person } from '../types';
 import { Loader } from '../components/Loader';
-import { PersonLink } from '../components/PersonLink';
-import { useParams } from 'react-router-dom';
+import { PeopleTable } from '../components/PeopleTable';
 
 export const PeoplePage = () => {
   const [peopleData, setPeopleData] = useState<Person[]>([]);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const { slug } = useParams();
 
   useEffect(() => {
     setHasError(false);
@@ -35,8 +32,6 @@ export const PeoplePage = () => {
     };
   });
 
-  const tableTitles = ['Name', 'Sex', 'Born', 'Died', 'Mother', 'Father'];
-
   const isError = hasError && !isLoading;
   const isEmpty = !peopleList?.length && !isLoading && !hasError;
   const isPeople = !!peopleList?.length;
@@ -59,35 +54,7 @@ export const PeoplePage = () => {
             <p data-cy="noPeopleMessage">There are no people on the server</p>
           )}
 
-          {isPeople && (
-            <table
-              data-cy="peopleTable"
-              className="table is-striped is-hoverable is-narrow is-fullwidth"
-            >
-              <thead>
-                <tr>
-                  {tableTitles.map(title => (
-                    <th key={title}>{title}</th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody>
-                {peopleList.map(person => {
-                  const isActive = person.slug === slug;
-
-                  return (
-                    <PersonLink
-                      key={person.slug}
-                      person={person}
-                      isActive={isActive}
-                    />
-                  );
-                })}
-                ;
-              </tbody>
-            </table>
-          )}
+          {isPeople && <PeopleTable peopleList={peopleList} />}
         </div>
       </div>
     </>
